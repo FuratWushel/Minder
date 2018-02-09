@@ -33,5 +33,7 @@ namespace Minder.Models
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Interest> Interests { get; set; }
         public DbSet<Picture> Pictures { get; set; }
+
+        public System.Data.Entity.DbSet<Minder.Models.Message> Messages { get; set; }
     }
 }
