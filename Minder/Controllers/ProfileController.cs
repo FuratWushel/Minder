@@ -82,7 +82,7 @@ namespace Minder.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Profile profile, HttpPostedFileBase ImageUpload)
+        public ActionResult Edit(Profile profile, HttpPostedFileBase ImageUpload, List<HttpPostedFileBase> Pictures)
         {
             // server side validatie van het model object
             if (ModelState.IsValid)
@@ -113,10 +113,11 @@ namespace Minder.Controllers
                 storedProfile.Nickname = profile.Nickname;
 
                 db.SaveChanges();
+                
 
                 // afbeelding verwerken
                 if (ImageUpload != null && ImageUpload.ContentLength > 0)
-                {                   
+                {
                     // directory aanmaken
                     var uploadPath = Path.Combine(Server.MapPath("~/Content/Uploads"), storedProfile.Id.ToString());
                     Directory.CreateDirectory(uploadPath);
@@ -135,6 +136,28 @@ namespace Minder.Controllers
                     Picture pic = new Picture { Filename = newFilename };
                     storedProfile.ProfilePicture = pic;
                 }
+
+                //// afbeelding verwerken
+                //if (ImageUpload != null && ImageUpload.ContentLength > 1)
+                //{
+                //    // directory aanmaken
+                //    var uploadPath = Path.Combine(Server.MapPath("~/Content/Uploads/PhotoAlbum"), storedProfile.Id.ToString());
+                //    Directory.CreateDirectory(uploadPath);
+
+                //    // TODO: oude afbeelding verwijderen
+
+                //    // bestandsnaam maken
+                //    string fileGuid = Guid.NewGuid().ToString();
+                //    string extension = Path.GetExtension(ImageUpload.FileName);
+                //    string newFilename = fileGuid + extension;
+
+                //    // bestand opslaan
+                //    ImageUpload.SaveAs(Path.Combine(uploadPath, newFilename));
+
+                //    // opslaan in database
+                //    List<Picture> pic = new List<Picture> { Filename = newFilename };
+                //    storedProfile.Pictures = pic;
+                //}
 
                 // alle wijzigingen opslaan in de DB
                 db.SaveChanges();
