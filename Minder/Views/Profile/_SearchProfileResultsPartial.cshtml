@@ -1,0 +1,9 @@
+﻿@model IEnumerable<Minder.Models.ProfileResultViewModel>
+
+@foreach (var item in Model)
+{
+    <h4>@Html.DisplayFor(modelItem => item.)</h4>
+    <h3>@Html.DisplayFor(modelItem => item.Subject)</h3>
+    @Html.ActionLink("Details", "Details", new { @class = "btn btn-default", id = item.Id })
+    <hr />
+}

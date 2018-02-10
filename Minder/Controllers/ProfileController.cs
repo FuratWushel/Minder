@@ -25,22 +25,47 @@ namespace Minder.Controllers
         }
 
         // GET: Profiles
+        [HttpPost]
+        [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult Search()
         {
-             return View();
+
+            ProfileRepository profilesRep = new ProfileRepository();
+
+            ProfileResultViewModel m = new ProfileResultViewModel();
+
+            m.ProfileResults = profilesRep.GetAllProfiles();
+
+            return View(m);
         }
 
         // GET: Profiles
         [HttpPost]
-        public ActionResult Search(ProfileSearchViewModel svm)
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult Search(ProfileResultViewModel m)
         {
+            if (ModelState.IsValid)
+            {
+                ProfileRepository profilesRep = new ProfileRepository();
+
+                var profiles = profilesRep.GetAllProfiles();
+
+                if (!string.IsNullOrEmpty(m.NickName))
+                {
+                    profiles = profiles.Where(n => n.Nickname.ToLower().Contains(m.NickName.ToLower())).ToList();
+                }
+
+                m.ProfileResults = profiles;
+            }
             // TODO: ProfileResultViewModel aanpassen
             // TODO: code om te filteren op wat er in de svm staat
-
-            var profiles = db.Profiles.Include(p => p.ProfilePicture);
-
             // TODO: View scaffolden
-            return View(profiles.ToList());
+
+
+            //var profiles = db.Profiles.Include(p => p.ProfilePicture);
+
+
+            return View(m);
         }
 
         // GET: Profiles/Details/5
@@ -65,7 +90,7 @@ namespace Minder.Controllers
             // ingelogde user ophalen via usermanager
             var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
             var currentUser = manager.FindById(User.Identity.GetUserId());
-            
+
             // bijbehorend profiel ophalen uit de DB
             Profile profile = db.Profiles.SingleOrDefault(p => p.User.Id == currentUser.Id);
             if (profile == null)
@@ -90,7 +115,7 @@ namespace Minder.Controllers
                 // ingelogde user ophalen via usermanager
                 var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
                 var currentUser = manager.FindById(User.Identity.GetUserId());
-                
+
                 // profiel dat bij de user hoort uit de DB halen
                 Profile storedProfile = db.Profiles.SingleOrDefault(p => p.User.Id == currentUser.Id);
 
@@ -101,7 +126,7 @@ namespace Minder.Controllers
                     profile.User = currentUser;
                     db.Profiles.Add(storedProfile);
                 }
-                
+
                 // data overzetten van geposte object naar database object
                 storedProfile.Birthdate = profile.Birthdate;
                 storedProfile.City = profile.City;
@@ -116,7 +141,7 @@ namespace Minder.Controllers
 
                 // afbeelding verwerken
                 if (ImageUpload != null && ImageUpload.ContentLength > 0)
-                {                   
+                {
                     // directory aanmaken
                     var uploadPath = Path.Combine(Server.MapPath("~/Content/Uploads"), storedProfile.Id.ToString());
                     Directory.CreateDirectory(uploadPath);
@@ -130,7 +155,7 @@ namespace Minder.Controllers
 
                     // bestand opslaan
                     ImageUpload.SaveAs(Path.Combine(uploadPath, newFilename));
-     
+
                     // opslaan in database
                     Picture pic = new Picture { Filename = newFilename };
                     storedProfile.ProfilePicture = pic;
