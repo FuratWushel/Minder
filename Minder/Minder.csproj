@@ -212,6 +212,7 @@
     <Compile Include="Models\Interest.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\PhotoAlbum.cs" />
     <Compile Include="Models\Picture.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\ProfileRepository.cs" />
@@ -4601,7 +4602,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Content\Uploads\" />
+    <Folder Include="Content\Uploads\PhotoAlbum\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
