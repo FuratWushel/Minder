@@ -25,47 +25,22 @@ namespace Minder.Controllers
         }
 
         // GET: Profiles
-        [HttpPost]
-        [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult Search()
         {
-
-            ProfileRepository profilesRep = new ProfileRepository();
-
-            ProfileResultViewModel m = new ProfileResultViewModel();
-
-            m.ProfileResults = profilesRep.GetAllProfiles();
-
-            return View(m);
+            return View();
         }
 
         // GET: Profiles
         [HttpPost]
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Search(ProfileResultViewModel m)
+        public ActionResult Search(ProfileSearchViewModel svm)
         {
-            if (ModelState.IsValid)
-            {
-                ProfileRepository profilesRep = new ProfileRepository();
-
-                var profiles = profilesRep.GetAllProfiles();
-
-                if (!string.IsNullOrEmpty(m.NickName))
-                {
-                    profiles = profiles.Where(n => n.Nickname.ToLower().Contains(m.NickName.ToLower())).ToList();
-                }
-
-                m.ProfileResults = profiles;
-            }
             // TODO: ProfileResultViewModel aanpassen
             // TODO: code om te filteren op wat er in de svm staat
+
+            var profiles = db.Profiles.Include(p => p.ProfilePicture);
+
             // TODO: View scaffolden
-
-
-            //var profiles = db.Profiles.Include(p => p.ProfilePicture);
-
-
-            return View(m);
+            return View(profiles.ToList());
         }
 
         // GET: Profiles/Details/5
